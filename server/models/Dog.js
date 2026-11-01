@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
+// schema for a dog
 const DogSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true,
-    unique: true, // lookups are by name, so keep names unique
+    trim: true, 
+    unique: true, 
   },
   breed: {
     type: String,
@@ -19,7 +20,7 @@ const DogSchema = new mongoose.Schema({
   },
   createdDate: {
     type: Date,
-    default: Date.now,
+    default: Date.now, // set automatically when the dog is made
   },
 });
 

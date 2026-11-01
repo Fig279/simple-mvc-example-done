@@ -32,11 +32,13 @@
     document.querySelector('#message').textContent = text;
   };
 
+  // sends either form to the server without reloading the page
   const sendPost = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     const form = e.target;
-    const data = new URLSearchParams(new FormData(form));
+    const data = new URLSearchParams(new FormData(form)); // form data -> urlencoded
 
+    // post to whatever the form's action is 
     const response = await fetch(form.action, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -44,6 +46,7 @@
     });
     const result = await response.json();
 
+    // the server sends back an error key 
     if (result.error) {
       showMessage(`Error: ${result.error}`);
     } else {

@@ -334,6 +334,7 @@ const updateDog = async (req, res) => {
       { returnDocument: 'after' },
     ).exec();
 
+    // no dog with that name
     if (!doc) {
       return res.status(404).json({ error: 'That dog does not exist' });
     }
