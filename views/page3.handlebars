@@ -1,18 +1,56 @@
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <!-- passed in variables in handlebars are surrounded by two curly braces like the following
-       Any variable you pass into res.render will be available by name in the template through
-       the curly braces
-  -->
-  <title>{{title}}</title>
-</head>
-<body>
-  <h1>Welcome to page 3</h1>
-  
-  <!-- links or URLs are always GET resources as they are getting (retrieving) a resource -->
+<div class="page">
+  <h1>Dogs</h1>
+
   <a href="/">Home</a>
   <a href="/page1">Page 1</a>
   <a href="/page2">Page 2</a>
-</body>
-</html>
+  <a href="/page4">Page 4</a>
+
+  <form id="dogForm" action="/createDog" method="POST">
+    <h2>Create a Dog</h2>
+    <label for="dogName">Name: </label>
+    <input id="dogName" type="text" name="name" />
+    <label for="dogBreed">Breed: </label>
+    <input id="dogBreed" type="text" name="breed" />
+    <label for="dogAge">Age: </label>
+    <input id="dogAge" type="number" name="age" min="0" />
+    <input type="submit" value="Make Dog" />
+  </form>
+
+  <form id="updateForm" action="/updateDog" method="POST">
+    <h2>Age a Dog by One Year</h2>
+    <label for="lookupName">Name: </label>
+    <input id="lookupName" type="text" name="name" />
+    <input type="submit" value="Age Dog" />
+  </form>
+
+  <h3 id="message"></h3>
+</div>
+
+<script>
+  const showMessage = (text) => {
+    document.querySelector('#message').textContent = text;
+  };
+
+  const sendPost = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const data = new URLSearchParams(new FormData(form));
+
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: data,
+    });
+    const result = await response.json();
+
+    if (result.error) {
+      showMessage(`Error: ${result.error}`);
+    } else {
+      showMessage(`${result.name} (${result.breed}) is now ${result.age} year(s) old`);
+    }
+  };
+
+  document.querySelector('#dogForm').addEventListener('submit', sendPost);
+  document.querySelector('#updateForm').addEventListener('submit', sendPost);
+</script>

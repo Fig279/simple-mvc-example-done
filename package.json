@@ -23,5 +23,13 @@
     "express-handlebars": "^8.0.1",
     "mongoose": "^8.19.1",
     "serve-favicon": "^2.5.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fig279/simple-mvc-example-done.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Fig279/simple-mvc-example-done/issues"
+  },
+  "homepage": "https://github.com/Fig279/simple-mvc-example-done#readme"
 }

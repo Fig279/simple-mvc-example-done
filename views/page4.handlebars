@@ -1,0 +1,14 @@
+<div class="page">
+  <h1>All Dogs</h1>
+  <a href="/">Home</a>
+  <a href="/page1">Page 1</a>
+  <a href="/page2">Page 2</a>
+  <a href="/page3">Page 3</a>
+  <ul>
+    {{#each dogs}}
+    <li>{{this.name}} - {{this.breed}} - age {{this.age}}</li>
+    {{else}}
+    <li>No dogs yet</li>
+    {{/each}}
+  </ul>
+</div>

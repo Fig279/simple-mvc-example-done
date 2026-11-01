@@ -2,7 +2,7 @@
 const models = require('../models');
 
 // get the Cat model
-const { Cat } = models;
+const { Cat, Dog } = models;
 
 // Function to handle rendering the index page.
 const hostIndex = async (req, res) => {
@@ -98,6 +98,17 @@ const hostPage2 = (req, res) => {
 // Function to render the untemplated page3.
 const hostPage3 = (req, res) => {
   res.render('page3');
+};
+
+// list every dog
+const hostPage4 = async (req, res) => {
+  try {
+    const docs = await Dog.find({}).lean().exec();
+    return res.render('page4', { dogs: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Failed to find dogs' });
+  }
 };
 
 // Get name will return the name of the last added cat.
@@ -283,15 +294,69 @@ const notFound = (req, res) => {
   });
 };
 
+// POST createDog
+const createDog = async (req, res) => {
+  const { name, breed, age } = req.body;
+
+  if (!name || !breed || age === undefined || age === '') {
+    return res.status(400).json({ error: 'name, breed and age are all required' });
+  }
+
+  try {
+    const newDog = new Dog({ name, breed, age });
+    await newDog.save();
+    return res.status(201).json({
+      name: newDog.name,
+      breed: newDog.breed,
+      age: newDog.age,
+    });
+  } catch (err) {
+    console.log(err);
+    if (err.code === 11000) {
+      return res.status(409).json({ error: 'A dog with that name already exists' });
+    }
+    return res.status(500).json({ error: 'Failed to create dog' });
+  }
+};
+
+// POST find by name, age + 1
+const updateDog = async (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: 'A dog name is required' });
+  }
+
+  try {
+    const doc = await Dog.findOneAndUpdate(
+      { name },
+      { $inc: { age: 1 } },
+      { returnDocument: 'after' },
+    ).exec();
+
+    if (!doc) {
+      return res.status(404).json({ error: 'That dog does not exist' });
+    }
+
+    return res.json({ name: doc.name, breed: doc.breed, age: doc.age });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
 // export the relevant public controller functions
 module.exports = {
   index: hostIndex,
   page1: hostPage1,
   page2: hostPage2,
   page3: hostPage3,
+  page4: hostPage4,
   getName,
   setName,
   updateLast,
   searchName,
   notFound,
+  createDog, 
+  updateDog
 };
